@@ -30,18 +30,15 @@ int main(int argc, char *argv[]) {
         g_world.Advance();
         g_world.Render(g_window->bmp);
 
-        DrawTextRight(font, g_colourWhite, g_window->bmp, g_window->bmp->width - 5, 0, "FPS:%i", g_window->fps);
-        DrawTextLeft(font, g_colourWhite, g_window->bmp, 0, 0, "Bench Time:%.2f", duration);
+        RectFill(g_window->bmp, g_window->bmp->width - 54, 0, 54, 13, g_colourBlack);
+        DrawTextRight(font, g_colourWhite, g_window->bmp, g_window->bmp->width - 2, 0, "FPS:%i", g_window->fps);
 
-//         if (frameNum == 500)
-//         {
-//             // We got to the end of the benchmark run, stop the clock!
-//             double endTime = DfGetTime();
-//             duration = endTime - startTime;
-//         }
+        if (frameNum < 500)
+            duration = GetRealTime() - startTime;
+        RectFill(g_window->bmp, 0, 0, 130, 13, g_colourBlack);
+        DrawTextLeft(font, g_colourWhite, g_window->bmp, 2, 0, "Bench Time: %.2f", duration);
 
         UpdateWin(g_window);
-//        DfSleepMillisec(10);
 
         frameNum++;
     }

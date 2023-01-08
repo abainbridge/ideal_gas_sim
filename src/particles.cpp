@@ -52,8 +52,8 @@ Particles::Particles() {
 
         p.vx = MAX_INITIAL_SPEED;
         p.vy = MAX_INITIAL_SPEED;
-//         p.vx = frand(MAX_INITIAL_SPEED * 2.0f) - MAX_INITIAL_SPEED;
-//         p.vy = frand(MAX_INITIAL_SPEED * 2.0f) - MAX_INITIAL_SPEED;
+        p.vx = frand(MAX_INITIAL_SPEED * 2.0f) - MAX_INITIAL_SPEED;
+        p.vy = frand(MAX_INITIAL_SPEED * 2.0f) - MAX_INITIAL_SPEED;
         p.vx += MAX_INITIAL_SPEED * 0.2f;
         p.vy += MAX_INITIAL_SPEED * 0.1f;
         AddParticle(&p);
