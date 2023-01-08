@@ -24,15 +24,12 @@ static float const MAX_INITIAL_SPEED = 120.0f;
 static float const RADIUS2 = PARTICLE_RADIUS * 2.0f;
 
 
-Particles::Particles()
-{
+Particles::Particles() {
     m_showHistogram = false;
 
     // Initialize the grid as empty.
-    for (unsigned y = 0; y < GRID_RES_Y; y++)
-    {
-        for (unsigned x = 0; x < GRID_RES_X; x++)
-        {
+    for (unsigned y = 0; y < GRID_RES_Y; y++) {
+        for (unsigned x = 0; x < GRID_RES_X; x++) {
             PList &plist = m_grid[y * GRID_RES_X + x];
             plist.p.x = INVALID_PARTICLE_X;
             plist.next = NULL;
@@ -46,11 +43,9 @@ Particles::Particles()
     m_firstFree = m_particles;
 
     // Place the particles
-    for (unsigned i = 0; i < NUM_PARTICLES; i++)
-    {
+    for (unsigned i = 0; i < NUM_PARTICLES; i++) {
         Particle p;
-        do
-        {
+        do {
             p.x = frand(WORLD_SIZE_X * 0.999f);
             p.y = frand(WORLD_SIZE_Y * 0.999f);
         } while (0);// g_world.m_walls->IsWallPixel(p.x, p.y));
@@ -66,13 +61,11 @@ Particles::Particles()
 }
 
 
-void Particles::HandleAnyCollisions(PList *plist, PList *otherPlist)
-{
+void Particles::HandleAnyCollisions(PList *plist, PList *otherPlist) {
     bool compareAgainstSelf = plist == otherPlist;
     PList *otherPlistOrig = otherPlist;
 
-    do
-    {
+    do {
         Particle *p1 = &plist->p;
 
         if (compareAgainstSelf)
@@ -80,14 +73,12 @@ void Particles::HandleAnyCollisions(PList *plist, PList *otherPlist)
         else
             otherPlist = otherPlistOrig;
 
-        while (otherPlist)
-        {
+        while (otherPlist) {
             Particle *p2 = &otherPlist->p;
             float deltaX = p2->x - p1->x;
             float deltaY = p2->y - p1->y;
             float distSqrd = deltaX * deltaX + deltaY * deltaY;
-            if (distSqrd < RADIUS2 * RADIUS2)
-            {
+            if (distSqrd < RADIUS2 * RADIUS2) {
                 // There has been a collision.
 
                 // Collision normal is the vector between the two particle centers.
@@ -154,8 +145,8 @@ void Particles::HandleAnyCollisions(PList *plist, PList *otherPlist)
 }
 
 
-void Particles::Advance()
-{
+
+void Particles::Advance() {
     float advanceTime = 0.001f;// g_world.m_advanceTime;
 
     if (g_window->input.keyDowns[KEY_H])
@@ -164,17 +155,14 @@ void Particles::Advance()
     if (m_showHistogram)
         memset(m_speedHistogram, 0, sizeof(unsigned) * SPEED_HISTOGRAM_NUM_BINS);
 
-    for (unsigned y = 0; y < GRID_RES_Y; y++)
-    {
-        for (unsigned x = 0; x < GRID_RES_X; x++)
-        {
+    for (unsigned y = 0; y < GRID_RES_Y; y++) {
+        for (unsigned x = 0; x < GRID_RES_X; x++) {
             PList *plist = m_grid + y * GRID_RES_X + x;
             if (plist->IsEmpty())
                 continue;
 
             PList *plistGrid = plist;
-            do
-            {
+            do {
                 Particle *p = &plist->p;
 
                 // Increment position and keep particle inside the bounds of the world.
@@ -186,8 +174,7 @@ void Particles::Advance()
                     p->vy = -p->vy;
 
                 // Update speed histogram
-                if (m_showHistogram)
-                {
+                if (m_showHistogram) {
                     float speed = sqrtf(p->vx * p->vx + p->vy * p->vy);
                     unsigned bin_index = SPEED_HISTOGRAM_NUM_BINS * speed / (3.0f * MAX_INITIAL_SPEED);
                     if (bin_index >= SPEED_HISTOGRAM_NUM_BINS)
@@ -222,42 +209,34 @@ void Particles::Advance()
         }
     }
 
-    for (unsigned y = 0; y < GRID_RES_Y; y++)
-    {
-        for (unsigned x = 0; x < GRID_RES_X; x++)
-        {
+    for (unsigned y = 0; y < GRID_RES_Y; y++) {
+        for (unsigned x = 0; x < GRID_RES_X; x++) {
             PList *plistGrid = m_grid + y * GRID_RES_X + x;
             if (plistGrid->IsEmpty())
                 continue;
 
             PList *plist = plistGrid;
             PList *prevPlist = NULL;
-            do
-            {
+            do {
                 // Move this particle into another cell, if needed.
                 Particle *p = &plist->p;
                 PList *newPlist = GetPListFromCoords(p->x, p->y);
-                if (newPlist && plistGrid != newPlist)
-                {
+                if (newPlist && plistGrid != newPlist) {
                     AddParticle(p);
 
-                    if (plist == plistGrid)
-                    {
-                        if (plist->next == NULL)
-                        {
+                    if (plist == plistGrid) {
+                        if (plist->next == NULL) {
                             plist->p.x = INVALID_PARTICLE_X;
                             plist = NULL;
                         }
-                        else
-                        {
+                        else {
                             PList *toFree = plist->next;
                             *plist = *(plist->next);
                             toFree->next = m_firstFree;
                             m_firstFree = toFree;
                         }
                     }
-                    else
-                    {
+                    else {
                         prevPlist->next = plist->next;
                         PList *toFree = plist;
                         plist = plist->next;
@@ -265,8 +244,7 @@ void Particles::Advance()
                         m_firstFree = toFree;
                     }
                 }
-                else
-                {
+                else {
                     prevPlist = plist;
                     plist = plist->next;
                 }
@@ -276,20 +254,16 @@ void Particles::Advance()
 }
 
 
-void Particles::Render(DfBitmap *bmp)
-{
+void Particles::Render(DfBitmap *bmp) {
     static const DfColour col = Colour(255, 255, 255, 255);
 
-    for (unsigned y = 0; y < GRID_RES_Y; y++)
-    {
-        for (unsigned x = 0; x < GRID_RES_X; x++)
-        {
+    for (unsigned y = 0; y < GRID_RES_Y; y++) {
+        for (unsigned x = 0; x < GRID_RES_X; x++) {
             PList *plist = m_grid + y * GRID_RES_X + x;
             if (plist->IsEmpty())
                 continue;
 
-            do
-            {
+            do {
                 float px = plist->p.x;
                 float py = plist->p.y;
                 g_world.WorldToScreen(&px, &py);
@@ -302,10 +276,8 @@ void Particles::Render(DfBitmap *bmp)
         }
     }
 
-    if (m_showHistogram)
-    {
-        for (unsigned i = 0; i < SPEED_HISTOGRAM_NUM_BINS; i++)
-        {
+    if (m_showHistogram) {
+        for (unsigned i = 0; i < SPEED_HISTOGRAM_NUM_BINS; i++) {
             const unsigned barWidth = 4;
             const float scale = 1000.0f / (float)NUM_PARTICLES;
             unsigned h = m_speedHistogram[i] * scale;
@@ -315,16 +287,14 @@ void Particles::Render(DfBitmap *bmp)
 }
 
 
-Particles::PList *Particles::GetPListFromIndices(unsigned x, unsigned y)
-{
+Particles::PList *Particles::GetPListFromIndices(unsigned x, unsigned y) {
     if (x >= GRID_RES_X || y >= GRID_RES_Y)
         return NULL;
     return m_grid + y * GRID_RES_X + x;
 }
 
 
-Particles::PList *Particles::GetPListFromCoords(float x, float y)
-{
+Particles::PList *Particles::GetPListFromCoords(float x, float y) {
     static const float xFactor = (float)GRID_RES_X / (float)WORLD_SIZE_X;
     static const float yFactor = (float)GRID_RES_Y / (float)WORLD_SIZE_Y;
     unsigned gridX = x * xFactor;
@@ -333,15 +303,13 @@ Particles::PList *Particles::GetPListFromCoords(float x, float y)
 }
 
 
-unsigned Particles::CountParticlesInCell(unsigned x, unsigned y)
-{
+unsigned Particles::CountParticlesInCell(unsigned x, unsigned y) {
     unsigned count = 0;
     PList *plist = m_grid + y * GRID_RES_X + x;
     if (plist->IsEmpty())
         return 0;
 
-    do
-    {
+    do {
         count++;
         plist = plist->next;
     } while (plist);
@@ -350,8 +318,7 @@ unsigned Particles::CountParticlesInCell(unsigned x, unsigned y)
 }
 
 
-unsigned Particles::Count()
-{
+unsigned Particles::Count() {
     unsigned count = 0;
     for (unsigned y = 0; y < GRID_RES_Y; y++)
         for (unsigned x = 0; x < GRID_RES_X; x++)
@@ -361,13 +328,11 @@ unsigned Particles::Count()
 }
 
 
-void Particles::AddParticle(Particle *p)
-{
+void Particles::AddParticle(Particle *p) {
     PList *plist = GetPListFromCoords(p->x, p->y);
     DebugAssert(plist);
 
-    if (plist->IsEmpty())
-    {
+    if (plist->IsEmpty()) {
         plist->p = *p;
         return;
     }

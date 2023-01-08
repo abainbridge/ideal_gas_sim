@@ -18,8 +18,7 @@
 World g_world;
 
 
-World::World()
-{
+World::World() {
     m_particles = new Particles;
 
     m_viewOffsetX = 0.0f;
@@ -30,10 +29,8 @@ World::World()
 }
 
 
-void World::Advance()
-{
-    if (g_window->input.lmb || g_window->input.mmb || g_window->input.rmb)
-    {
+void World::Advance() {
+    if (g_window->input.lmb || g_window->input.mmb || g_window->input.rmb) {
         m_viewOffsetX += g_window->input.mouseVelX;
         m_viewOffsetY += g_window->input.mouseVelY;
     }
@@ -66,14 +63,12 @@ void World::Advance()
 }
 
 
-void World::Render(DfBitmap *bmp)
-{
+void World::Render(DfBitmap *bmp) {
     m_particles->Render(bmp);
 }
 
 
-void World::WorldToScreen(float *x, float *y)
-{
+void World::WorldToScreen(float *x, float *y) {
     *x = (*x * m_viewScale) + m_viewOffsetX;
     *y = (*y * m_viewScale) + m_viewOffsetY;
 }

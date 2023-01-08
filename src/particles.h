@@ -12,8 +12,7 @@ typedef struct _DfBitmap DfBitmap;
 // * Switched to fixed point maths
 
 
-struct Particle
-{
+struct Particle {
     float x, y;
     float vx, vy;
 };
@@ -23,14 +22,12 @@ static float const PARTICLE_RADIUS = 0.354f;
 static float const INVALID_PARTICLE_X = -1000.0f;
 
 
-class Particles
-{
+class Particles {
 public:
     static unsigned const GRID_RES_X = 300;
     static unsigned const GRID_RES_Y = (GRID_RES_X * WORLD_SIZE_Y) / WORLD_SIZE_X;
 
-    struct PList
-    {
+    struct PList {
         Particle p;
         PList *next;
 

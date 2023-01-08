@@ -10,8 +10,7 @@ static const unsigned WORLD_SIZE_X = 800;
 static const unsigned WORLD_SIZE_Y = 600;
 
 
-class World
-{
+class World {
 public:
     Particles *m_particles;
     Walls *m_walls;

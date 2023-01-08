@@ -15,8 +15,7 @@
 #include <stdio.h>
 
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
     g_window = CreateWin(WORLD_SIZE_X * 1.5, WORLD_SIZE_Y * 1.5, WT_WINDOWED_FIXED, "Ideal Gas Simulator");
     g_world.m_viewScale = (float)g_window->bmp->width / WORLD_SIZE_X;
     DfFont *font = LoadFontFromMemory(df_mono_8x15, sizeof(df_mono_8x15));
@@ -24,8 +23,7 @@ int main(int argc, char *argv[])
     double startTime = GetRealTime();
     double duration = 0.0;
     unsigned frameNum = 0;
-    while (!g_window->windowClosed && !g_window->input.keys[KEY_ESC])
-    {
+    while (!g_window->windowClosed && !g_window->input.keys[KEY_ESC]) {
         BitmapClear(g_window->bmp, g_colourBlack);
         InputPoll(g_window);
 
