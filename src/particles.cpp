@@ -202,9 +202,6 @@ void Particles::Advance() {
                 if (otherPlist && !otherPlist->IsEmpty()) HandleAnyCollisions(plistGrid, otherPlist);
 
                 HandleAnyCollisions(plistGrid, plistGrid);  // Special one - check cell against itself.
-
-                otherPlist = GetPListFromIndices(x - 1, y - 1);
-                if (otherPlist && !otherPlist->IsEmpty()) HandleAnyCollisions(plistGrid, otherPlist);
             }
         }
     }
@@ -255,7 +252,7 @@ void Particles::Advance() {
 
 
 void Particles::Render(DfBitmap *bmp) {
-    static const DfColour col = Colour(255, 255, 255, 255);
+    static const DfColour col = g_colourWhite;
 
     for (unsigned y = 0; y < GRID_RES_Y; y++) {
         for (unsigned x = 0; x < GRID_RES_X; x++) {
