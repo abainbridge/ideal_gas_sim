@@ -24,7 +24,7 @@ static float const INVALID_PARTICLE_X = -1000.0f;
 
 class Particles {
 public:
-    static unsigned const GRID_RES_X = 300;
+    static unsigned const GRID_RES_X = 512;
     static unsigned const GRID_RES_Y = (GRID_RES_X * WORLD_SIZE_Y) / WORLD_SIZE_X;
 
     struct PList {
