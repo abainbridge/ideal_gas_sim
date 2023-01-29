@@ -193,11 +193,12 @@ void Particles::Advance() {
 
     for (unsigned y = 0; y < GRID_RES_Y; y++) {
         for (unsigned x = 0; x < GRID_RES_X; x++) {
-            PList *plist = m_grid + y * GRID_RES_X + x;
-            if (plist->IsEmpty())
+            PList *plistGrid = m_grid + y * GRID_RES_X + x;
+            if (plistGrid->IsEmpty())
                 continue;
 
-            PList *plistGrid = plist;
+            PList *plist = plistGrid;
+            PList *prevPlist = NULL;
             while (1) {
                 Particle *p = &plist->p;
 
@@ -218,43 +219,7 @@ void Particles::Advance() {
                     m_speedHistogram[bin_index]++;
                 }
 
-                if (plist->nextIdx == -1)
-                    break;
-                plist = &m_particles[plist->nextIdx];
-            }
-
-            // Do the collisions
-            {
-                PList *otherPlist = NULL;
-
-                otherPlist = GetPListFromIndices(x - 1, y - 1);
-                if (otherPlist && !otherPlist->IsEmpty()) HandleAnyCollisions(plistGrid, otherPlist);
-
-                otherPlist = GetPListFromIndices(x, y - 1);
-                if (otherPlist && !otherPlist->IsEmpty()) HandleAnyCollisions(plistGrid, otherPlist);
-
-                otherPlist = GetPListFromIndices(x + 1, y - 1);
-                if (otherPlist && !otherPlist->IsEmpty()) HandleAnyCollisions(plistGrid, otherPlist);
-
-                otherPlist = GetPListFromIndices(x - 1, y);
-                if (otherPlist && !otherPlist->IsEmpty()) HandleAnyCollisions(plistGrid, otherPlist);
-
-                HandleAnyCollisionsSelf(plistGrid);  // Special one - check cell against itself.
-            }
-        }
-    }
-
-    for (unsigned y = 0; y < GRID_RES_Y; y++) {
-        for (unsigned x = 0; x < GRID_RES_X; x++) {
-            PList *plistGrid = m_grid + y * GRID_RES_X + x;
-            if (plistGrid->IsEmpty())
-                continue;
-
-            PList *plist = plistGrid;
-            PList *prevPlist = NULL;
-            while (1) {
                 // Move this particle into another cell, if needed.
-                Particle *p = &plist->p;
                 PList *newPlist = GetPListFromCoords(p->x, p->y);
                 if (newPlist && plistGrid != newPlist) {
                     AddParticle(p);
@@ -289,6 +254,25 @@ void Particles::Advance() {
                         break;
                     plist = &m_particles[plist->nextIdx];
                 }
+            } // end while
+
+            // Do collisions.
+            {
+                PList *otherPlist = NULL;
+
+                otherPlist = GetPListFromIndices(x - 1, y - 1);
+                if (otherPlist && !otherPlist->IsEmpty()) HandleAnyCollisions(plistGrid, otherPlist);
+
+                otherPlist = GetPListFromIndices(x, y - 1);
+                if (otherPlist && !otherPlist->IsEmpty()) HandleAnyCollisions(plistGrid, otherPlist);
+
+                otherPlist = GetPListFromIndices(x + 1, y - 1);
+                if (otherPlist && !otherPlist->IsEmpty()) HandleAnyCollisions(plistGrid, otherPlist);
+
+                otherPlist = GetPListFromIndices(x - 1, y);
+                if (otherPlist && !otherPlist->IsEmpty()) HandleAnyCollisions(plistGrid, otherPlist);
+
+                HandleAnyCollisionsSelf(plistGrid);  // Special one - check cell against itself.
             }
         }
     }
