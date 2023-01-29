@@ -56,7 +56,8 @@ Particles::Particles() {
         p.vy = frand(MAX_INITIAL_SPEED * 2.0f) - MAX_INITIAL_SPEED;
         p.vx += MAX_INITIAL_SPEED * 0.2f;
         p.vy += MAX_INITIAL_SPEED * 0.1f;
-        AddParticle(&p);
+        PList *plist = GetPListFromCoords(p.x, p.y);
+        AddParticle(&p, plist);
     }
 }
 
@@ -222,7 +223,7 @@ void Particles::Advance() {
                 // Move this particle into another cell, if needed.
                 PList *newPlist = GetPListFromCoords(p->x, p->y);
                 if (newPlist && plistGrid != newPlist) {
-                    AddParticle(p);
+                    AddParticle(p, newPlist);
 
                     if (plist == plistGrid) {
                         if (plist->nextIdx == -1) {
@@ -355,10 +356,7 @@ unsigned Particles::Count() {
 }
 
 
-void Particles::AddParticle(Particle *p) {
-    PList *plist = GetPListFromCoords(p->x, p->y);
-    DebugAssert(plist);
-
+void Particles::AddParticle(Particle *p, PList *plist) {
     if (plist->IsEmpty()) {
         plist->p = *p;
         return;

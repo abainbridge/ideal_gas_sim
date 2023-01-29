@@ -47,6 +47,7 @@ private:
     void HandleCollision(Particle *p1, Particle *p2, float distSqrd);
     void HandleAnyCollisions(PList *cell, PList *otherCell);
     void HandleAnyCollisionsSelf(PList *cell);
+    void AddParticle(Particle *p, PList *plist);
 
 public:
     static const unsigned NUM_PARTICLES = 80000;
@@ -68,5 +69,4 @@ public:
 
     unsigned CountParticlesInCell(unsigned x, unsigned y);
     unsigned Count();
-    void AddParticle(Particle *p);
 };
