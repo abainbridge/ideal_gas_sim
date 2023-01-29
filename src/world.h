@@ -6,8 +6,8 @@ class Particles;
 class Walls;
 
 
-static const unsigned WORLD_SIZE_X = 800;
-static const unsigned WORLD_SIZE_Y = 600;
+static const unsigned WORLD_SIZE_X = 1200;
+static const unsigned WORLD_SIZE_Y = 900;
 
 
 class World {

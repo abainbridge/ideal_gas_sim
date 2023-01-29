@@ -32,7 +32,7 @@ static float const INVALID_PARTICLE_X = -1000.0f;
 
 class Particles {
 public:
-    static unsigned const GRID_RES_X = 512;
+    static unsigned const GRID_RES_X = 700;
     static unsigned const GRID_RES_Y = (GRID_RES_X * WORLD_SIZE_Y) / WORLD_SIZE_X;
 
     struct PList {
@@ -50,7 +50,7 @@ private:
     void AddParticle(Particle *p, PList *plist);
 
 public:
-    static const unsigned NUM_PARTICLES = 80000;
+    static const unsigned NUM_PARTICLES = 120000;
     static const unsigned SPEED_HISTOGRAM_NUM_BINS = 20;
 
     PList m_grid[GRID_RES_X * GRID_RES_Y];  // A 2D array of PLists. When a cell is empty, p.x == INVALID_PARTICLE_X and next == NULL.
