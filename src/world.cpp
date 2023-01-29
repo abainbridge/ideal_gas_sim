@@ -57,7 +57,7 @@ void World::Advance() {
     if (!g_window->input.keys[KEY_SPACE])
         m_particles->Advance();
     else
-        SleepMillisec(800);
+        SleepMillisec(200);
 
     m_particles->Advance();
 }
