@@ -21,13 +21,8 @@ typedef struct _DfBitmap DfBitmap;
 
 
 struct Particle {
-    union {
-        struct {
-            float x, y;
-            float vx, vy;
-        };
-        __m128 sse;
-    };
+    float x, y;
+    float vx, vy;
 };
 
 

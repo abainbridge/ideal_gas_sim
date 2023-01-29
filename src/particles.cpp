@@ -122,7 +122,7 @@ void Particles::HandleCollision(Particle *p1, Particle *p2, float distSqrd) {
 
 
 static float getDistSqrd(Particle const *a, Particle const *b) {
-#if 0
+#if 1
     float dx = a->x - b->x;
     float dy = a->y - b->y;
     return dx * dx + dy * dy;
@@ -143,9 +143,6 @@ void Particles::HandleAnyCollisions(PList *plist, PList *otherPlist) {
 
         while (1) {
             Particle *p2 = &otherPlist->p;
-//             float deltaX = p2->x - p1->x;
-//             float deltaY = p2->y - p1->y;
-//             float distSqrd = deltaX * deltaX + deltaY * deltaY;
             float distSqrd = getDistSqrd(p1, p2);
             if (distSqrd < RADIUS2 * RADIUS2) {
                 // There has been a collision.
