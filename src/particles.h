@@ -1,5 +1,6 @@
 #pragma once
 
+#include <smmintrin.h>
 #include "world.h"  // For WORLD_SIZE_X and _Y
 
 
@@ -20,8 +21,13 @@ typedef struct _DfBitmap DfBitmap;
 
 
 struct Particle {
-    float x, y;
-    float vx, vy;
+    union {
+        struct {
+            float x, y;
+            float vx, vy;
+        };
+        __m128 sse;
+    };
 };
 
 
@@ -43,7 +49,7 @@ public:
 
 private:
     bool m_showHistogram;
-    void HandleCollision(Particle *p1, Particle *p2, float dx, float dy, float distSqrd);
+    void HandleCollision(Particle *p1, Particle *p2, float distSqrd);
     void HandleAnyCollisions(PList *cell, PList *otherCell);
     void HandleAnyCollisionsSelf(PList *cell);
 

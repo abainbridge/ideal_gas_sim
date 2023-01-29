@@ -61,12 +61,14 @@ Particles::Particles() {
 }
 
 
-void Particles::HandleCollision(Particle *p1, Particle *p2, float deltaX, float deltaY, float distSqrd) {
+void Particles::HandleCollision(Particle *p1, Particle *p2, float distSqrd) {
     // Collision normal is the vector between the two particle centers.
     // The only change in velocity of either particle is in the 
     // direction of the collision normal.
 
     // Calculate collision unit normal and tangent.
+    float deltaX = p2->x - p1->x;
+    float deltaY = p2->y - p1->y;
     float dist = sqrtf(distSqrd);
     float invDist = 1.0f / dist;
     float normX = deltaX * invDist;
@@ -119,6 +121,19 @@ void Particles::HandleCollision(Particle *p1, Particle *p2, float deltaX, float 
 }
 
 
+static float getDistSqrd(Particle const *a, Particle const *b) {
+#if 0
+    float dx = a->x - b->x;
+    float dy = a->y - b->y;
+    return dx * dx + dy * dy;
+#else
+    __m128 subResult = _mm_sub_ps(a->sse, b->sse);
+    __m128 dotProdResult = _mm_dp_ps(subResult, subResult, 0x33);
+    return _mm_cvtss_f32(dotProdResult);
+#endif
+}
+
+
 void Particles::HandleAnyCollisions(PList *plist, PList *otherPlist) {
     PList *otherPlistOrig = otherPlist;
 
@@ -128,12 +143,13 @@ void Particles::HandleAnyCollisions(PList *plist, PList *otherPlist) {
 
         while (1) {
             Particle *p2 = &otherPlist->p;
-            float deltaX = p2->x - p1->x;
-            float deltaY = p2->y - p1->y;
-            float distSqrd = deltaX * deltaX + deltaY * deltaY;
+//             float deltaX = p2->x - p1->x;
+//             float deltaY = p2->y - p1->y;
+//             float distSqrd = deltaX * deltaX + deltaY * deltaY;
+            float distSqrd = getDistSqrd(p1, p2);
             if (distSqrd < RADIUS2 * RADIUS2) {
                 // There has been a collision.
-                HandleCollision(p1, p2, deltaX, deltaY, distSqrd);
+                HandleCollision(p1, p2, distSqrd);
             }
 
             if (otherPlist->nextIdx == -1)
@@ -156,12 +172,10 @@ void Particles::HandleAnyCollisionsSelf(PList *plist) {
 
     while (1) {
         Particle *p2 = &plist->p;
-        float deltaX = p2->x - p1->x;
-        float deltaY = p2->y - p1->y;
-        float distSqrd = deltaX * deltaX + deltaY * deltaY;
+        float distSqrd = getDistSqrd(p1, p2);
         if (distSqrd < RADIUS2 * RADIUS2) {
             // There has been a collision.
-            HandleCollision(p1, p2, deltaX, deltaY, distSqrd);
+            HandleCollision(p1, p2, distSqrd);
         }
 
         if (plist->nextIdx == -1)
