@@ -332,27 +332,32 @@ Particles::PList *Particles::GetPListFromCoords(float x, float y) {
 
 
 unsigned Particles::CountParticlesInCell(unsigned x, unsigned y) {
-    unsigned count = 0;
     PList *plist = m_grid + y * GRID_RES_X + x;
     if (plist->IsEmpty())
         return 0;
 
-    do {
+    unsigned count = 1;
+    while (plist->nextIdx != -1) {
         count++;
         plist = &m_particles[plist->nextIdx];
-    } while (plist);
+    }
 
     return count;
 }
 
 
 unsigned Particles::Count() {
-    unsigned count = 0;
-    for (unsigned y = 0; y < GRID_RES_Y; y++)
-        for (unsigned x = 0; x < GRID_RES_X; x++)
-            count += CountParticlesInCell(x, y);
+    memset(m_countsPerCell, 0, sizeof(m_countsPerCell));
+    unsigned totalNum = 0;
+    for (unsigned y = 0; y < GRID_RES_Y; y++) {
+        for (unsigned x = 0; x < GRID_RES_X; x++) {
+            unsigned thisCount = CountParticlesInCell(x, y);
+            m_countsPerCell[thisCount]++;
+            totalNum += thisCount;
+        }
+    }
 
-    return count;
+    return totalNum;
 }
 
 

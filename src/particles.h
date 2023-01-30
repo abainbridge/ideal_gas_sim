@@ -44,6 +44,8 @@ public:
 
 private:
     bool m_showHistogram;
+    unsigned m_countsPerCell[16];
+
     void HandleCollision(Particle *p1, Particle *p2, float distSqrd);
     void HandleAnyCollisions(PList *cell, PList *otherCell);
     void HandleAnyCollisionsSelf(PList *cell);
